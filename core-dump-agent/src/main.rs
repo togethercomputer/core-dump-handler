@@ -292,7 +292,7 @@ async fn process_file(zip_path: &Path, bucket: &Bucket) {
 
     let f = File::open(zip_path).expect("no file found");
 
-    match f.try_lock(FileLockMode::Shared) {
+    match AdvisoryFileLock::try_lock(&f, FileLockMode::Shared) {
         Ok(_) => { /* If we can lock then we are ok */ }
         Err(e) => {
             let l_inotify = env::var("USE_INOTIFY")
@@ -352,7 +352,7 @@ async fn process_file(zip_path: &Path, bucket: &Bucket) {
     );
 }
 
-fn get_bucket() -> Result<Bucket, anyhow::Error> {
+fn get_bucket() -> Result<Box<Bucket>, anyhow::Error> {
     let s3_access_key = env::var("S3_ACCESS_KEY").unwrap_or_default();
     let s3_secret = env::var("S3_SECRET").unwrap_or_default();
     let s3_bucket_name = env::var("S3_BUCKET_NAME").unwrap_or_default();
