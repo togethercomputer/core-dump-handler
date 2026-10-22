@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.15.4 as builder
+FROM docker.io/alpine:3.22 as builder
 
 ARG ARCH
 
@@ -20,9 +20,9 @@ RUN cargo build --verbose --release
 RUN curl -L https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.22.0/crictl-v1.22.0-linux-$ARCH.tar.gz --output crictl-v1.22.0-linux-$ARCH.tar.gz
 RUN tar zxvf crictl-v1.22.0-linux-$ARCH.tar.gz
 
-FROM docker.io/alpine:3.15.4
+FROM docker.io/alpine:3.22
 
-RUN apk update && apk add procps
+RUN apk update && apk add --upgrade ca-certificates procps
 
 WORKDIR "/app"
 COPY --from=builder /app-build/target/release/core-dump-agent ./
