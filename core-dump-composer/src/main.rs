@@ -15,7 +15,7 @@ use std::process;
 use std::sync::mpsc::channel;
 use std::thread;
 use std::time::Duration;
-use zip::write::FileOptions;
+use zip::write::SimpleFileOptions;
 use zip::ZipWriter;
 
 mod config;
@@ -119,7 +119,7 @@ fn handle(mut cc: config::CoreConfig) -> Result<(), anyhow::Error> {
     } else {
         zip::CompressionMethod::Stored
     };
-    let options = FileOptions::default()
+    let options = SimpleFileOptions::default()
         .compression_method(compression_method)
         .unix_permissions(0o444)
         .large_file(true);
